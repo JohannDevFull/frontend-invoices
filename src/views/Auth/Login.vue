@@ -70,7 +70,8 @@ export default {
                 // localStorage.setItem('id', response.data.userData.id);
                 // localStorage.setItem('userName', response.data.userData.userName);
 
-                this.$router.push('/dashboard');
+                location.href = "/dashboard";
+                // this.$router.push('/dashboard');
             })
             .catch(error => {
                 var data = error.response.data;

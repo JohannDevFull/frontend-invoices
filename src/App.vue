@@ -1,6 +1,7 @@
 <template>
   
   <AppLayout v-if="usuario" />
+  
   <SiteLayout  v-else/>
 
 </template>
