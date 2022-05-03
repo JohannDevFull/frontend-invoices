@@ -9,8 +9,8 @@
         </h3>
         
         <nav class="nav nav-masthead justify-content-center float-md-end">
-          <router-link class="nav-link" to="/login">Login</router-link> 
-          <router-link class="nav-link" to="/register">Register</router-link>
+          <router-link :class="urlActive('/login')" to="/login">Login</router-link> 
+          <router-link :class="urlActive('/register')" to="/register">Register</router-link>
         </nav>
       </div>
     </header>
@@ -88,8 +88,15 @@
 
 export default {
   name: 'HomeView',
-  components: {
-    
-  }
+  methods: {
+    urlActive(val)
+    {
+      let resp;
+      let url=  this.$route.path;
+      if(url == val){resp="nav-link active";}else{resp="nav-link ";}
+      return resp;
+    },
+  },
+
 }
 </script>

@@ -11,6 +11,7 @@
 </style>
 
 <script >
+import axios from 'axios'
 
 import AppLayout from './layout/AppLayout.vue'
 import SiteLayout from './layout/SiteLayout.vue'
@@ -25,33 +26,53 @@ export default {
   },
   mounted() {
     setTimeout(()=>{
-      this.tokenValidate
-    },1000)
+      this.tokenValidate()
+    },1000);
   },
   components: {
     AppLayout,
     SiteLayout
   },
-  computed: {
+  methods: {
     tokenValidate()
     {
-      let valid;
       if(localStorage.getItem('token'))
       {
-        valid=true;
         if(this.store.token == '')
         {
-          alert("Refres token");
+          this.store.token=localStorage.getItem('token');
+          this.store.isAuth=true;
+          this.$router.push('/dashboard');
+          this.getUserAuth();
         }
         
       }
-      else
-      {
-        valid=false;
-      }
+    },
+    getUserAuth()
+    {
+      
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.store.token;
 
-      return valid;
+      axios.get(this.store.url_base+'get-user-auth')
+      .then(response => {
+          this.store.$state = { 
+              user_name: response.data.user.name ,
+              name: response.data.user.name ,
+              isAuth: true,
+          };
+      })
+      .catch(error => {
+          var data = error.response.data;
+          this.store.$state = { 
+              user_name: '' ,
+              name: '' ,
+              isAuth: false,
+          };
+
+          location.href="/";
+      });
     }
+
   }
 
 }

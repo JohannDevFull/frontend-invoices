@@ -202,8 +202,10 @@ export default {
       logout()
       {
         
-        localStorage.removeItem('token');
-        axios.post(this.store.url_base+'logout', payload)
+       
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.store.token;
+
+        axios.post(this.store.url_base+'logout-api')
         .then(response => {
           
             this.store.$state = { 
@@ -211,12 +213,15 @@ export default {
                 name: '' ,
                 isAuth: false
             };
-            
+
+            localStorage.removeItem('token');
+            this.$store.dispatch("doLogout");
             location.href="/";
         })
         .catch(error => {
             // var data = error.response.data;
-            location.href="/";
+
+            console.log(error)
         });
 
         

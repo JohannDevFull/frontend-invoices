@@ -3,9 +3,9 @@
   <div class="mt-4" style="border: 1px solid white">
 
     <div class="mt-2">
-      <a class="btn btn-primary" href="/invoices-sales/create">
+      <router-link class="btn btn-primary" to="/invoices-sales/create">
         Crear Factura compra
-      </a>
+      </router-link>
 
       <div class="row">
         <div class="col-sm-12 col-md-6" >

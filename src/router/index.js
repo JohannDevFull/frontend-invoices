@@ -7,6 +7,8 @@ import InvoicesSales from '../views/App/Invoices/InvoicesSales.vue'
 import CreateInvoicesSales from '../views/App/Invoices/Create.vue'
 import CreateInvoices from '../views/App/Invoices/Create.vue'
 
+import { useUserStore } from '@/stores/user'
+
 const routes = [
   {
     path: '/',
@@ -23,7 +25,7 @@ const routes = [
   },
   {
     path: '/login',
-    name: 'login',
+    name: 'Login',
     component: Login
   },
   {
@@ -44,21 +46,33 @@ const routes = [
   {
     path: '/invoices-sales',
     name: 'invoices_sales',
+    meta: {
+      requiresAuth: true
+    },
     component: InvoicesSales
   },
   {
     path: '/invoices-sales/create',
     name: 'invoices-sales-create',
+    meta: {
+      requiresAuth: true
+    },
     component: CreateInvoicesSales
   },
   {
     path: '/invoices',
     name: 'invoices',
+    meta: {
+      requiresAuth: true
+    },
     component: InvoicesSales
   },
   {
     path: '/invoices/create',
     name: 'invoices-sales',
+    meta: {
+      requiresAuth: true
+    },
     component: CreateInvoices
   }
 ]
@@ -68,17 +82,21 @@ const router = createRouter({
   routes
 });
 
-// router.beforeEach((to, from, next) => {
-//   if (to.matched.some((record) => record.meta.requiresAuth)) {
-//     if (store.state.auth) {
-//       next();
-//     } else {
-//       next({ name: "Login" });
-//     }
-//   } else {
-//     next();
-//   }
-// });
+
+router.beforeEach((to, from, next) => {
+
+  const store = useUserStore()
+
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (store.isAuth) {
+      next();
+    } else {
+      next({ name: "Login" });
+    }
+  } else {
+    next();
+  }
+});
 
 
 export default router
