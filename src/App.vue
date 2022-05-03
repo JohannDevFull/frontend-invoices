@@ -1,6 +1,6 @@
 <template>
   
-  <AppLayout v-if="usuario" />
+  <AppLayout v-if="store.isAuth" />
   
   <SiteLayout  v-else/>
 
@@ -10,23 +10,39 @@
 
 </style>
 
-<script>
-// @ is an alias to /src <SiteLayout /> <AppLayout  />
+<script >
+
 import AppLayout from './layout/AppLayout.vue'
 import SiteLayout from './layout/SiteLayout.vue'
 
+import { useUserStore } from '@/stores/user'
+
 export default {
-  
+  setup(){
+    const store = useUserStore()
+
+    return { store }
+  },
+  mounted() {
+    setTimeout(()=>{
+      this.tokenValidate
+    },1000)
+  },
   components: {
     AppLayout,
     SiteLayout
   },
   computed: {
-    usuario(){
+    tokenValidate()
+    {
       let valid;
       if(localStorage.getItem('token'))
       {
         valid=true;
+        if(this.store.token == '')
+        {
+          alert("Refres token");
+        }
         
       }
       else
@@ -35,9 +51,6 @@ export default {
       }
 
       return valid;
-    },
-    id(){
-      return localStorage.getItem('id')
     }
   }
 

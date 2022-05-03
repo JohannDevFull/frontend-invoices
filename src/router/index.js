@@ -31,9 +31,14 @@ const routes = [
     name: 'register',
     component: Register
   },
+
+
   {
     path: '/dashboard',
     name: 'dashboard',
+    meta: {
+      requiresAuth: true
+    },
     component: Dashboard
   },
   {
@@ -55,12 +60,25 @@ const routes = [
     path: '/invoices/create',
     name: 'invoices-sales',
     component: CreateInvoices
-  },
+  }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
+});
+
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.some((record) => record.meta.requiresAuth)) {
+//     if (store.state.auth) {
+//       next();
+//     } else {
+//       next({ name: "Login" });
+//     }
+//   } else {
+//     next();
+//   }
+// });
+
 
 export default router

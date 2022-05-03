@@ -28,8 +28,15 @@
 <script>
 
 import axios from 'axios'
+import { useUserStore } from '@/stores/user'
+
 
 export default {
+    setup(){
+        const store = useUserStore()
+
+        return { store }
+    },
     name: 'AuthLogin',
     data(){
         return {
@@ -65,18 +72,17 @@ export default {
             .then(response => {
                 
                 axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
-
                 localStorage.setItem('token', response.data.token);
-                // localStorage.setItem('id', response.data.userData.id);
-                // localStorage.setItem('userName', response.data.userData.userName);
-
-                location.href = "/dashboard";
-                // this.$router.push('/dashboard');
+                this.store.$state = { 
+                    token: response.data.token, 
+                    name: response.data.token ,
+                    isAuth: true,
+                };
+                
+                this.$router.push('/dashboard');
             })
             .catch(error => {
                 var data = error.response.data;
-                // M.toast({html: data.message});
-
             });
 
             this.loading = false;

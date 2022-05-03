@@ -67,7 +67,7 @@
     
     <div class="navbar-nav">
       <div class="nav-item text-nowrap">
-        <a class="nav-link px-3" href="#">Sign out</a>
+        <a class="nav-link px-3" href="#" @click="logout()">Sign out</a>
       </div>
     </div>
   </header>
@@ -150,8 +150,16 @@
 </template>
 
 <script>
+import axios from 'axios'
+import { useUserStore } from '@/stores/user'
 
-  export default {
+
+export default {
+    setup(){
+        const store = useUserStore()
+
+        return { store }
+    },
     name: 'HomeView',
     components: {
       
@@ -190,6 +198,28 @@
 
 
         return resp;
+      },
+      logout()
+      {
+        
+        localStorage.removeItem('token');
+        axios.post(this.store.url_base+'logout', payload)
+        .then(response => {
+          
+            this.store.$state = { 
+                token: '', 
+                name: '' ,
+                isAuth: false
+            };
+            
+            location.href="/";
+        })
+        .catch(error => {
+            // var data = error.response.data;
+            location.href="/";
+        });
+
+        
       }
     }
   }

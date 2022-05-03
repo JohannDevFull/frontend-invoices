@@ -232,8 +232,14 @@
 
 <script>
 import axios from 'axios'
+import { useUserStore } from '@/stores/user'
 
 export default {
+  setup(){
+      const store = useUserStore()
+
+      return { store }
+  },
   name: 'Dashboard',
   components: {
   },
@@ -305,9 +311,9 @@ export default {
 
         this.loading = true;
 
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.store.token;
 
-        axios.post("http://127.0.0.1:8000/api/invoices-sales-pagination?page=" +
+        axios.post(this.store.url_base+"invoices-sales-pagination?page=" +
             page +
             "&show=" +
             this.show +
