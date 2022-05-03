@@ -27,7 +27,7 @@
         
         <div class="col-md-2">
           <label for="validationCustom01" class="form-label">ID:</label>
-          <input type="text" class="form-control" id="id" v-model="id" @keyup="getProvider()">
+          <input type="text" class="form-control" id="id" v-model="id" >
           <div class="valid-feedback">
             Looks good!
           </div>
@@ -85,11 +85,10 @@
         </div>
 
         <div class="col-12">
-          <button class="btn btn-primary" type="submit">Cargar factura</button>
+          <button class="btn btn-primary" type="submit">Actualizar factura</button>
         </div>
 
       </form>
-
     </div>
 
     <div class="m-4" style="border: 1px solid white">
@@ -175,9 +174,17 @@
 // import Multiselect from 'vue-multiselect'
 // import  'vue-multiselect/dist/vue-multiselect.min.css'
 import axios from 'axios'
+import { useUserStore } from '@/stores/user'
+import { useInvoiceStore } from '@/stores/invoices'
 
 export default {
-  name: 'Dashboard',
+  setup(){
+      const store = useUserStore()
+      const storeInvoice = useInvoiceStore()
+
+      return { store , storeInvoice}
+  },
+  name: 'EditInvoice',
   components: {
     // Multiselect
   },
@@ -191,7 +198,6 @@ export default {
       id:'',
       number_invoice:'',
       date_invoice:'',
-      name_customer:'',
       
       code:'',
       name:'',
@@ -265,7 +271,30 @@ export default {
       return sum;
     }
   },
+  mounted(){
+    this.getInvoice()
+  },
   methods:{
+    getInvoice()
+    {
+      
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+
+      axios.get(this.store.url_base+'invoices-sales/'+this.storeInvoice.id)
+      .then(response => {
+        
+        console.log("--------- ...333... --------");
+        console.log(response);
+        console.log("--------- ...333... --------");
+
+        this.invoices_products=response.data.invoice.items;
+
+      })
+      .catch(error => {
+          // var data = error.response.data;
+      });
+
+    },
     
     searchModal()
     {
@@ -318,29 +347,9 @@ export default {
 
       return iva;
     },
-
-    getProvider()
-    {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
-
-      axios.get('http://127.0.0.1:8000/api/provider/'+this.id)
-      .then(response => {
-        
-        console.log("--------- ...getProvider... --------");
-        console.log(response.data.provider.name);
-        console.log("--------- ...getProvider... --------");
-
-        this.name_customer="Test"
-        this.name_customer=response.data.provider.name;
-
-      })
-      .catch(error => {
-          // var data = error.response.data;
-      });
-    },
     
 
-    store()
+    update()
     {
         var payload = {
             number_invoice:this.number_invoice,
@@ -359,7 +368,7 @@ export default {
 
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
-        axios.post('http://127.0.0.1:8000/api/invoices-sales', payload)
+        axios.post('http://127.0.0.1:8000/api/invoices-sales/', payload)
         .then(response => {
             
             console.log("--------- ...... --------");

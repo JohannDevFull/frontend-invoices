@@ -5,6 +5,7 @@ import Register from '../views/Auth/Register.vue'
 import Dashboard from '../views/App/Dashboard.vue'
 import InvoicesSales from '../views/App/Invoices/InvoicesSales.vue'
 import CreateInvoicesSales from '../views/App/Invoices/Create.vue'
+import EditInvoicesSales from '../views/App/Invoices/Edit.vue'
 import CreateInvoices from '../views/App/Invoices/Create.vue'
 
 import { useUserStore } from '@/stores/user'
@@ -60,6 +61,14 @@ const routes = [
     component: CreateInvoicesSales
   },
   {
+    path: '/invoices-sales/edit/:id',
+    name: 'invoices_sales_edit',
+    meta: {
+      requiresAuth: true
+    },
+    component: EditInvoicesSales
+  },
+  {
     path: '/invoices',
     name: 'invoices',
     meta: {
@@ -85,14 +94,25 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
 
-  const store = useUserStore()
+  const store = useUserStore();
+
+  const token = localStorage.getItem('token');
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (store.isAuth) {
+    // if (store.isAuth) {
+    //   next();
+    // } else {
+    //   next({ name: "Login" });
+    // }
+    if (token != '') 
+    {
       next();
-    } else {
+    } 
+    else 
+    {
       next({ name: "Login" });
     }
+
   } else {
     next();
   }

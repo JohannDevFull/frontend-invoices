@@ -35,7 +35,7 @@
           >
             <label  
             class="sear-label "
-              >Buscar por nombre o documento:<input
+              >Buscar por # Factura o proveerdor:<input
                 type="search"
                 class="form-control form-control-sm"
                 placeholder=""
@@ -111,6 +111,7 @@
           <td>{{item.value_pay}}</td>
           <td>{{item.date_invoice}}</td>
           <td>
+
 
             <button type="button" class="btn btn-outline-success mr-1" @click="viewInvoice(item.id)">
               <i class="fas fa-eye"></i>
@@ -233,12 +234,14 @@
 <script>
 import axios from 'axios'
 import { useUserStore } from '@/stores/user'
+import { useInvoiceStore } from '@/stores/invoices'
 
 export default {
   setup(){
       const store = useUserStore()
+      const storeInvoice = useInvoiceStore()
 
-      return { store }
+      return { store , storeInvoice}
   },
   name: 'Dashboard',
   components: {
@@ -321,14 +324,11 @@ export default {
             this.search
         , payload)
         .then(response => {
-            
-
           this.pagination = response.data.pagination;
           this.invoices = response.data.invoices.data;
-            
         })
         .catch(error => {
-            var data = error.response.data;
+            // var data = error.response.data;
         });
 
         this.loading = false;
@@ -364,14 +364,34 @@ export default {
 
     viewInvoice(id)
     {
-
+      
     },
     editInvoice(id)
     {
+      this.storeInvoice.$state = { 
+        id: id
+      };
 
+      this.$router.push({ name: 'invoices_sales_edit', params: { id: id } })
     },
     deleteInvoice(id)
     {
+
+      
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.store.token;
+
+      axios.delete(this.store.url_base+"invoices-sales/"+id)
+      .then(response => {
+          
+        // this.pagination = response.data.pagination;
+        // this.invoices = response.data.invoices.data;
+        alert("Factura Eliminada:"+id)
+        this.getInvoice();
+        
+      })
+      .catch(error => {
+          var data = error.response.data;
+      });
 
     }
   }

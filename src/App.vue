@@ -69,6 +69,8 @@ export default {
               isAuth: false,
           };
 
+          localStorage.removeItem('token');
+
           location.href="/";
       });
     }
